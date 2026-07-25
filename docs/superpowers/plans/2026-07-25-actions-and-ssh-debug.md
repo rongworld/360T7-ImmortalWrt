@@ -143,12 +143,11 @@ git commit -m "ci: update Actions and replace tmate"
 - [ ] **Step 1: Download actionlint into `/tmp` and lint both workflows**
 
 ```bash
-rm -rf /tmp/actionlint-check
-mkdir -p /tmp/actionlint-check
+ACTIONLINT_DIR="$(mktemp -d /tmp/actionlint-check.XXXXXX)"
 ACTIONLINT_TAG="$(curl -fsSL https://api.github.com/repos/rhysd/actionlint/releases/latest | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>process.stdout.write(JSON.parse(s).tag_name))")"
 ACTIONLINT_VERSION="${ACTIONLINT_TAG#v}"
-curl -fsSL "https://github.com/rhysd/actionlint/releases/download/${ACTIONLINT_TAG}/actionlint_${ACTIONLINT_VERSION}_linux_x86_64.tar.gz" | tar -xz -C /tmp/actionlint-check actionlint
-/tmp/actionlint-check/actionlint .github/workflows/build-openwrt.yml .github/workflows/update-checker.yml
+curl -fsSL "https://github.com/rhysd/actionlint/releases/download/${ACTIONLINT_TAG}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz" | tar -xz -C "$ACTIONLINT_DIR" actionlint
+"$ACTIONLINT_DIR/actionlint" .github/workflows/build-openwrt.yml .github/workflows/update-checker.yml
 ```
 
 Expected: exit code 0 with no diagnostics.
@@ -182,4 +181,3 @@ git status --short --branch
 ```
 
 Expected: no whitespace errors; only the approved documentation and workflow commits are ahead of `origin/main`; the worktree is clean.
-
