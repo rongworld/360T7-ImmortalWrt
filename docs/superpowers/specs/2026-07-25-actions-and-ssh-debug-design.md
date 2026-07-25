@@ -36,4 +36,3 @@
 - 修改后解析两份 workflow YAML，并检查事件输入、条件和所有 `uses:` 引用。
 - 用 `git ls-remote` 确认每个目标 tag 存在。
 - 检查最终差异只涉及设计文档和两个 workflow。
-
